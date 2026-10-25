@@ -12,8 +12,8 @@ EV3UARTSensor::EV3UARTSensor(HardwareSerial *uart, byte id, uint32_t speed)
 
 void EV3UARTSensor::Begin()
 {
-  Reset();
   OnSetup();
+  Reset();
 }
 
 void EV3UARTSensor::Run()
@@ -108,6 +108,8 @@ void EV3UARTSensor::HandleWaitAck(EV3Packet &packet)
 
   m_uart->end();
   m_uart->begin(m_speed);
+  m_modes[m_currentMode]->Init();
+  OnModeChanged(m_currentMode);
   SetState(STATE_RUNNING);
 }
 
@@ -139,7 +141,12 @@ void EV3UARTSensor::HandleRunning(EV3Packet &packet)
   if (mode >= m_modeCount)
     return;
 
+  if (mode == m_currentMode)
+    return;
+
   m_currentMode = mode;
+  OnModeChanged(mode);
+  m_modes[m_currentMode]->Init();
 }
 
 void EV3UARTSensor::CheckTimeout()

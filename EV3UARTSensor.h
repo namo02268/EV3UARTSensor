@@ -101,6 +101,7 @@ public:
   SensorMode(const ModeInfo &modeInfo) : modeInfo(modeInfo) {}
   virtual ~SensorMode() {}
 
+  virtual void Init() {}
   virtual void Update() {}
   virtual void GetData(byte *buffer) = 0;
 
@@ -178,6 +179,7 @@ protected:
   virtual void OnInit() {}
   virtual void OnWaitACK() {}
   virtual void OnRunning() {}
+  virtual void OnModeChanged(byte mode) {}
 
 private:
   bool ReceivePacket(EV3Packet &packet);
